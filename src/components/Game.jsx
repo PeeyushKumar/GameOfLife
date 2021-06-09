@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import Node from './Node'
 
-const noOfRows = 10
-const noOfCols = 20
+const noOfRows = 20
+const noOfCols = 40
 
 export default class Game extends Component {
     constructor() {
@@ -19,10 +19,10 @@ export default class Game extends Component {
             grid.push(row); 
         }
 
-        grid[4][8].isAlive=true;
-        grid[4][9].isAlive=true;
-        grid[4][10].isAlive=true;
-        grid[4][11].isAlive=true;
+        grid[9][18].isAlive=true;
+        grid[9][19].isAlive=true;
+        grid[9][20].isAlive=true;
+        grid[9][21].isAlive=true;
 
         this.state = {
             grid,
