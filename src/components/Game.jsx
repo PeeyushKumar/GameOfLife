@@ -1,12 +1,35 @@
 import React, {Component} from 'react'
 import Node from './Node'
 
-const noOfRows = 20
-const noOfCols = 40
 
 export default class Game extends Component {
     constructor() {
         super();
+
+        this.state = {
+            grid : [],
+            height : null,
+            width : null,
+            noOfRows : null,
+            noOfCols : null
+        }
+    }
+
+    componentDidMount = () => {
+        this.createGrid()
+        window.addEventListener('resize', this.createGrid);
+        setInterval(() => {
+            this.update()
+        }, 100);
+    }
+
+    createGrid = () => {
+        const height = window.innerHeight;
+        const width = window.innerWidth;
+        
+        const sizeOfNode = width*0.025
+        const noOfRows = Math.ceil(height / sizeOfNode);
+        const noOfCols = 40;
 
         const grid = []
         for (let rowIdx=0; rowIdx<noOfRows; rowIdx++) {
@@ -19,23 +42,25 @@ export default class Game extends Component {
             grid.push(row); 
         }
 
-        grid[9][18].isAlive=true;
-        grid[9][19].isAlive=true;
-        grid[9][20].isAlive=true;
-        grid[9][21].isAlive=true;
+        this.addBlinker(grid, noOfRows, noOfCols)
 
-        this.state = {
+        this.setState({
             grid,
-        }
+            noOfRows,
+            noOfCols
+        })
     }
 
-    componentDidMount = () => {
-        setInterval(() => {
-            this.update()
-        }, 100);
+    addBlinker = (grid, noOfRows, noOfCols) => {
+        const x = Math.floor(noOfRows/2);
+        const y = Math.floor(noOfCols/2);
+
+        grid[x][y-1].isAlive=true;
+        grid[x][y].isAlive=true;
+        grid[x][y+1].isAlive=true;
     }
 
-    isValidIdx = (row, col) => (row >= 0 && row < noOfRows && col >= 0 && col < noOfCols)
+    isValidIdx = (row, col) => (row >= 0 && row < this.state.noOfRows && col >= 0 && col < this.state.noOfCols)
 
     countNeighbours = (row, col) => {
         const {grid} = this.state;
@@ -71,7 +96,7 @@ export default class Game extends Component {
     }
 
     update = () => {
-        const {grid} = this.state;
+        const {grid, noOfRows, noOfCols} = this.state;
         
         const newGrid = [];
         for (let rowIdx=0; rowIdx<noOfRows; rowIdx++) {
